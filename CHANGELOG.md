@@ -15,6 +15,7 @@ Solo interfaccia: nessuna modifica al funzionamento del traceroute.
 - *? › Informazioni* mostra la lingua in uso e l'indirizzo del progetto su GitHub.
 
 ### Altro
+- **Build riproducibile:** l'eseguibile non contiene più l'hash del commit git nel numero di versione, quindi la stessa versione produce lo stesso exe sia da un clone git sia dallo zip dei sorgenti.
 - Test: 37, di cui 11 nuovi sulla localizzazione (ogni testo tradotto ha la sua voce in `en.json`, nessuna voce orfana, segnaposto identici, nessun testo a video senza `L.T`, lingua automatica, ritorno all'italiano se il file manca o non è valido).
 
 ## v1.2 — 2026-10-14

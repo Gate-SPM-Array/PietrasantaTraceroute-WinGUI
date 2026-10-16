@@ -20,6 +20,9 @@
     <DebugType>none</DebugType>
     <Nullable>disable</Nullable>
     <Deterministic>true</Deterministic>
+    <!-- Build riproducibile: senza questa riga l'SDK aggiunge alla versione l'hash del commit git
+         (1.2.1+abc123...) e lo stesso sorgente produce exe diversi dentro e fuori dal repository -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
