@@ -14,7 +14,7 @@ namespace PstrGui
 {
     public sealed class MainForm : Form
     {
-        public const string AppVersion = "1.2";
+        public const string AppVersion = "1.2.1";
 
         sealed class Method
         {
@@ -22,18 +22,19 @@ namespace PstrGui
             public override string ToString() => Label;
         }
 
-        static readonly Method[] Methods =
+        // Campo d'istanza (non statico): i testi vengono tradotti alla creazione della finestra, dopo L.Init.
+        readonly Method[] Methods =
         {
-            new Method { Label = "UDP (classico, porte incrementali)", Args = new string[0], Help = "Metodo predefinito di traceroute: datagrammi UDP verso porte alte incrementali (33434+)." },
-            new Method { Label = "ICMP Echo (-I)", Args = new[] { "-I" }, Help = "Come tracert di Windows: ICMP Echo Request." },
-            new Method { Label = "TCP SYN (-T)", Args = new[] { "-T" }, Help = "Pacchetti TCP SYN verso la porta indicata (predefinita 80). Utile oltre i firewall che lasciano passare il web." },
-            new Method { Label = "TCP InSession (--tcpinsession)", Args = new[] { "--tcpinsession" }, Help = "Apre una vera sessione TCP con la destinazione e invia le sonde DENTRO la sessione: segue un unico flusso, evita falsi drop dei firewall e il bilanciamento ECMP." },
-            new Method { Label = "TCP connect (-M tcpconn)", Args = new[] { "-M", "tcpconn" }, Help = "Usa connect() TCP standard con TTL crescente." },
-            new Method { Label = "UDP porta fissa (-U)", Args = new[] { "-U" }, Help = "UDP verso una porta fissa (predefinita 53)." },
-            new Method { Label = "UDP InSession (--udpinsession)", Args = new[] { "--udpinsession" }, Help = "Sonde UDP all'interno dello stesso flusso (stessa 5-tupla)." },
-            new Method { Label = "QUIC (--quic)", Args = new[] { "--quic" }, Help = "Pacchetti QUIC Initial verso la porta 443 (HTTP/3)." },
-            new Method { Label = "DNS (--dns)", Args = new[] { "--dns" }, Help = "Pacchetti con forma di query DNS verso la porta 53." },
-            new Method { Label = "DCCP (-D)", Args = new[] { "-D" }, Help = "DCCP Request (raro, per test specifici)." },
+            new Method { Label = L.T("UDP (classico, porte incrementali)"), Args = new string[0], Help = L.T("Metodo predefinito di traceroute: datagrammi UDP verso porte alte incrementali (33434+).") },
+            new Method { Label = "ICMP Echo (-I)", Args = new[] { "-I" }, Help = L.T("Come tracert di Windows: ICMP Echo Request.") },
+            new Method { Label = "TCP SYN (-T)", Args = new[] { "-T" }, Help = L.T("Pacchetti TCP SYN verso la porta indicata (predefinita 80). Utile oltre i firewall che lasciano passare il web.") },
+            new Method { Label = "TCP InSession (--tcpinsession)", Args = new[] { "--tcpinsession" }, Help = L.T("Apre una vera sessione TCP con la destinazione e invia le sonde DENTRO la sessione: segue un unico flusso, evita falsi drop dei firewall e il bilanciamento ECMP.") },
+            new Method { Label = "TCP connect (-M tcpconn)", Args = new[] { "-M", "tcpconn" }, Help = L.T("Usa connect() TCP standard con TTL crescente.") },
+            new Method { Label = L.T("UDP porta fissa (-U)"), Args = new[] { "-U" }, Help = L.T("UDP verso una porta fissa (predefinita 53).") },
+            new Method { Label = "UDP InSession (--udpinsession)", Args = new[] { "--udpinsession" }, Help = L.T("Sonde UDP all'interno dello stesso flusso (stessa 5-tupla).") },
+            new Method { Label = "QUIC (--quic)", Args = new[] { "--quic" }, Help = L.T("Pacchetti QUIC Initial verso la porta 443 (HTTP/3).") },
+            new Method { Label = "DNS (--dns)", Args = new[] { "--dns" }, Help = L.T("Pacchetti con forma di query DNS verso la porta 53.") },
+            new Method { Label = "DCCP (-D)", Args = new[] { "-D" }, Help = L.T("DCCP Request (raro, per test specifici).") },
         };
 
         static readonly string[] DscpItems =
@@ -46,9 +47,9 @@ namespace PstrGui
 
         // ---------------------------------------------------------------- controlli
         readonly ComboBox cbDistro = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 260 };
-        readonly Button btnRefresh = new Button { Text = "Aggiorna", AutoSize = true };
-        readonly Label lblTool = new Label { AutoSize = true, Text = "Verifica WSL in corso…", Padding = new Padding(0, 6, 0, 0) };
-        readonly Button btnInstall = new Button { Text = "Installa / aggiorna tool in WSL", AutoSize = true, Enabled = false };
+        readonly Button btnRefresh = new Button { Text = L.T("Aggiorna"), AutoSize = true };
+        readonly Label lblTool = new Label { AutoSize = true, Text = L.T("Verifica WSL in corso…"), Padding = new Padding(0, 6, 0, 0) };
+        readonly Button btnInstall = new Button { Text = L.T("Installa / aggiorna tool in WSL"), AutoSize = true, Enabled = false };
         readonly Label lblNet = new Label { AutoSize = true, Padding = new Padding(0, 6, 0, 0), ForeColor = SystemColors.GrayText };
 
         readonly ComboBox cbTarget = new ComboBox { DropDownStyle = ComboBoxStyle.DropDown, Width = 280 };
@@ -60,18 +61,18 @@ namespace PstrGui
         readonly NumericUpDown numTimeout = new NumericUpDown { Minimum = 0, Maximum = 3600, Value = 0, Width = 65 };
         readonly ComboBox cbDscp = new ComboBox { DropDownStyle = ComboBoxStyle.DropDown, Width = 150 };
         readonly ComboBox cbEcn = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 110 };
-        readonly CheckBox chkNoDns = new CheckBox { Text = "Non risolvere i nomi (-n)", AutoSize = true };
+        readonly CheckBox chkNoDns = new CheckBox { Text = L.T("Non risolvere i nomi (-n)"), AutoSize = true };
         readonly CheckBox chkAs = new CheckBox { Text = "Lookup AS (-A)", AutoSize = true };
-        readonly CheckBox chkExt = new CheckBox { Text = "Estensioni ICMP / MPLS (-e)", AutoSize = true };
+        readonly CheckBox chkExt = new CheckBox { Text = L.T("Estensioni ICMP / MPLS (-e)"), AutoSize = true };
         readonly CheckBox chkMtu = new CheckBox { Text = "Path MTU (--mtu)", AutoSize = true };
-        readonly CheckBox chkBack = new CheckBox { Text = "Stima percorso di ritorno (--back)", AutoSize = true };
+        readonly CheckBox chkBack = new CheckBox { Text = L.T("Stima percorso di ritorno (--back)"), AutoSize = true };
         readonly TextBox txtExtra = new TextBox { Width = 420 };
 
         readonly TextBox txtCmd = new TextBox { ReadOnly = true, Dock = DockStyle.Fill, Font = new Font("Consolas", 9.5f) };
-        readonly Button btnRun = new Button { Text = "▶  Avvia", AutoSize = true, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold) };
-        readonly Button btnStop = new Button { Text = "■  Interrompi", AutoSize = true, Enabled = false };
-        readonly Button btnCsv = new Button { Text = "Esporta CSV…", AutoSize = true, Enabled = false };
-        readonly Button btnTxt = new Button { Text = "Esporta report TXT…", AutoSize = true, Enabled = false };
+        readonly Button btnRun = new Button { Text = "▶  " + L.T("Avvia"), AutoSize = true, Font = new Font("Segoe UI", 9.5f, FontStyle.Bold) };
+        readonly Button btnStop = new Button { Text = "■  " + L.T("Interrompi"), AutoSize = true, Enabled = false };
+        readonly Button btnCsv = new Button { Text = L.T("Esporta CSV…"), AutoSize = true, Enabled = false };
+        readonly Button btnTxt = new Button { Text = L.T("Esporta report TXT…"), AutoSize = true, Enabled = false };
 
         readonly ListView lvHops = new ListView { View = View.Details, FullRowSelect = true, GridLines = true, Dock = DockStyle.Fill, HideSelection = false };
         readonly RichTextBox rtbRaw = new RichTextBox { Dock = DockStyle.Fill, ReadOnly = true, Font = new Font("Consolas", 9.5f), WordWrap = false, BackColor = Color.FromArgb(250, 250, 250), DetectUrls = false };
@@ -82,7 +83,7 @@ namespace PstrGui
         readonly ToolTip tip = new ToolTip { AutoPopDelay = 15000 };
         readonly Timer timer = new Timer { Interval = 200 };
 
-        ToolStripMenuItem miMirrored;
+        ToolStripMenuItem miMirrored, miLanguage;
 
         // ---------------------------------------------------------------- stato
         Process proc;
@@ -98,7 +99,7 @@ namespace PstrGui
 
         public MainForm()
         {
-            Text = "Pietrasanta Traceroute per Windows (WSL) – v" + AppVersion;
+            Text = L.T("Pietrasanta Traceroute per Windows (WSL)") + " – v" + AppVersion;
             Font = new Font("Segoe UI", 9f);
             AutoScaleMode = AutoScaleMode.Dpi;
             StartPosition = FormStartPosition.CenterScreen;
@@ -121,37 +122,81 @@ namespace PstrGui
         {
             var ms = new MenuStrip();
             var mFile = new ToolStripMenuItem("&File");
-            mFile.DropDownItems.Add("Esporta CSV…", null, (s, e) => ExportCsv());
-            mFile.DropDownItems.Add("Esporta report TXT…", null, (s, e) => ExportTxt());
+            mFile.DropDownItems.Add(L.T("Esporta CSV…"), null, (s, e) => ExportCsv());
+            mFile.DropDownItems.Add(L.T("Esporta report TXT…"), null, (s, e) => ExportTxt());
             mFile.DropDownItems.Add(new ToolStripSeparator());
-            mFile.DropDownItems.Add("Apri la cartella del programma", null, (s, e) =>
+            mFile.DropDownItems.Add(L.T("Apri la cartella del programma"), null, (s, e) =>
             {
                 try { Process.Start(new ProcessStartInfo("explorer.exe", Wsl.QuoteArg(Settings.ExeDir)) { UseShellExecute = true }); } catch { }
             });
             mFile.DropDownItems.Add(new ToolStripSeparator());
-            mFile.DropDownItems.Add("Esci", null, (s, e) => Close());
+            mFile.DropDownItems.Add(L.T("Esci"), null, (s, e) => Close());
 
-            var mTools = new ToolStripMenuItem("&Strumenti");
-            mTools.DropDownItems.Add("Installa / aggiorna tool nella distribuzione selezionata", null, async (s, e) => await InstallToolAsync());
-            mTools.DropDownItems.Add("Ricarica elenco distribuzioni WSL", null, async (s, e) => await RefreshDistrosAsync());
+            var mTools = new ToolStripMenuItem(L.T("&Strumenti"));
+            mTools.DropDownItems.Add(L.T("Installa / aggiorna tool nella distribuzione selezionata"), null, async (s, e) => await InstallToolAsync());
+            mTools.DropDownItems.Add(L.T("Ricarica elenco distribuzioni WSL"), null, async (s, e) => await RefreshDistrosAsync());
             mTools.DropDownItems.Add(new ToolStripSeparator());
-            miMirrored = new ToolStripMenuItem("Rete WSL in modalità \"mirrored\" (consigliata)", null, (s, e) => ToggleMirrored());
+            miMirrored = new ToolStripMenuItem(L.T("Rete WSL in modalità \"mirrored\" (consigliata)"), null, (s, e) => ToggleMirrored());
             mTools.DropDownItems.Add(miMirrored);
-            mTools.DropDownItems.Add("Installa Ubuntu 24.04 in WSL (per l'utente corrente)…", null, (s, e) => InstallWsl());
-            mTools.DropDownItems.Add("Diagnostica WSL", null, async (s, e) => await RunDiagnosticsAsync());
+            mTools.DropDownItems.Add(L.T("Installa Ubuntu 24.04 in WSL (per l'utente corrente)…"), null, (s, e) => InstallWsl());
+            mTools.DropDownItems.Add(L.T("Diagnostica WSL"), null, async (s, e) => await RunDiagnosticsAsync());
             mTools.DropDownItems.Add(new ToolStripSeparator());
-            mTools.DropDownItems.Add("Apri una shell nella distribuzione", null, (s, e) => OpenShell());
+            mTools.DropDownItems.Add(L.T("Apri una shell nella distribuzione"), null, (s, e) => OpenShell());
 
             var mHelp = new ToolStripMenuItem("&?");
-            mHelp.DropDownItems.Add("Guida opzioni del tool (--help)", null, async (s, e) => await ShowToolHelpAsync());
-            mHelp.DropDownItems.Add("Informazioni", null, (s, e) => ShowAbout());
+            mHelp.DropDownItems.Add(L.T("Guida opzioni del tool (--help)"), null, async (s, e) => await ShowToolHelpAsync());
+            mHelp.DropDownItems.Add(L.T("Informazioni"), null, (s, e) => ShowAbout());
 
-            ms.Items.AddRange(new ToolStripItem[] { mFile, mTools, mHelp });
+            ms.Items.AddRange(new ToolStripItem[] { mFile, mTools, BuildLanguageMenu(), mHelp });
             MainMenuStrip = ms;
             Controls.Add(ms);
         }
 
-        static Label L(string text) => new Label { Text = text, AutoSize = true, Padding = new Padding(0, 6, 0, 0), Margin = new Padding(8, 3, 2, 3) };
+        public const string RepoUrl = "https://github.com/Gate-SPM-Array/PietrasantaTraceroute-WinGUI";
+
+        /// <summary>Menu 🌐 Lingua / Language: la scelta viene salvata e applicata al riavvio del programma.</summary>
+        ToolStripMenuItem BuildLanguageMenu()
+        {
+            var m = miLanguage = new ToolStripMenuItem("🌐 " + L.T("&Lingua"));
+            foreach (var lang in L.Available())
+            {
+                var item = new ToolStripMenuItem(lang.Name) { Tag = lang, Checked = lang.Code.Equals(L.Code, StringComparison.OrdinalIgnoreCase) };
+                item.Click += (s, e) => ChangeLanguage((LanguageInfo)((ToolStripMenuItem)s).Tag);
+                m.DropDownItems.Add(item);
+            }
+            m.DropDownItems.Add(new ToolStripSeparator());
+            m.DropDownItems.Add(L.T("Apri la cartella delle traduzioni (lang)"), null, (s, e) =>
+            {
+                try
+                {
+                    Directory.CreateDirectory(L.LangDirectory);
+                    Process.Start(new ProcessStartInfo("explorer.exe", Wsl.QuoteArg(L.LangDirectory)) { UseShellExecute = true });
+                }
+                catch (Exception ex) { MessageBox.Show(this, L.F("Errore: {0}", ex.Message), Text); }
+            });
+            return m;
+        }
+
+        void ChangeLanguage(LanguageInfo lang)
+        {
+            if (lang.Code.Equals(L.Code, StringComparison.OrdinalIgnoreCase) && settings.Language.Length > 0) return;
+            settings.Language = lang.Code;
+            SaveSettings();
+            // Il messaggio è mostrato nella lingua scelta: è quella che l'utente sta cercando di leggere
+            var saved = L.Code;
+            L.Init(lang.Code);
+            var applied = L.T("La lingua verrà applicata al prossimo avvio del programma.");
+            var ask = L.T("Riavviare adesso?");
+            var title = L.T("Lingua");
+            L.Init(saved);
+            foreach (ToolStripItem i in miLanguage.DropDownItems)
+                if (i is ToolStripMenuItem mi && mi.Tag is LanguageInfo li) mi.Checked = li.Code == lang.Code;
+            if (proc != null) { MessageBox.Show(this, applied, title, MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
+            if (MessageBox.Show(this, applied + "\n\n" + ask, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                Application.Restart();
+        }
+
+        static Label Lbl(string text) => new Label { Text = text, AutoSize = true, Padding = new Padding(0, 6, 0, 0), Margin = new Padding(8, 3, 2, 3) };
 
         static FlowLayoutPanel Row(params Control[] ctrls)
         {
@@ -172,15 +217,15 @@ namespace PstrGui
             Control Fill(Control c) { c.Dock = DockStyle.Fill; return c; }
 
             // --- ambiente
-            root.Controls.Add(Fill(Row(H("Ambiente"), L("Distribuzione WSL:"), cbDistro, btnRefresh, L("Tool:"), lblTool, btnInstall)), 0, 0);
+            root.Controls.Add(Fill(Row(H(L.T("Ambiente")), Lbl(L.T("Distribuzione WSL:")), cbDistro, btnRefresh, Lbl("Tool:"), lblTool, btnInstall)), 0, 0);
             var envRow2 = Fill(Row(H(""), lblNet));
             root.Controls.Add(envRow2, 0, 1);
 
             // --- parametri
-            root.Controls.Add(Fill(Row(H("Parametri"), L("Destinazione:"), cbTarget, L("Metodo:"), cbMethod, L("Porta:"), numPort, L("(0 = predef.)"), L("IP:"), cbIp)), 0, 2);
-            root.Controls.Add(Fill(Row(H(""), L("Max hop:"), numMaxHops, L("Sonde per hop:"), numQueries, L("Timeout totale (s):"), numTimeout, L("(0 = nessuno)"), L("DSCP:"), cbDscp, L("ECN:"), cbEcn)), 0, 3);
+            root.Controls.Add(Fill(Row(H(L.T("Parametri")), Lbl(L.T("Destinazione:")), cbTarget, Lbl(L.T("Metodo:")), cbMethod, Lbl(L.T("Porta:")), numPort, Lbl(L.T("(0 = predef.)")), Lbl("IP:"), cbIp)), 0, 2);
+            root.Controls.Add(Fill(Row(H(""), Lbl(L.T("Max hop:")), numMaxHops, Lbl(L.T("Sonde per hop:")), numQueries, Lbl(L.T("Timeout totale (s):")), numTimeout, Lbl(L.T("(0 = nessuno)")), Lbl("DSCP:"), cbDscp, Lbl("ECN:"), cbEcn)), 0, 3);
             root.Controls.Add(Fill(Row(H(""), chkNoDns, chkAs, chkExt, chkMtu, chkBack)), 0, 4);
-            root.Controls.Add(Fill(Row(H(""), L("Opzioni aggiuntive:"), txtExtra, L("es.  -f 3   -N 1   -z 50   --sport=40000"))), 0, 5);
+            root.Controls.Add(Fill(Row(H(""), Lbl(L.T("Opzioni aggiuntive:")), txtExtra, Lbl(L.T("es.") + "  -f 3   -N 1   -z 50   --sport=40000"))), 0, 5);
             foreach (var c in new Control[] { chkNoDns, chkAs, chkExt, chkMtu, chkBack }) c.Margin = new Padding(8, 6, 6, 3);
 
             // --- comando + pulsanti
@@ -188,7 +233,7 @@ namespace PstrGui
             cmdRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             cmdRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             cmdRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            cmdRow.Controls.Add(H("Comando"), 0, 0);
+            cmdRow.Controls.Add(H(L.T("Comando")), 0, 0);
             txtCmd.Margin = new Padding(3, 6, 6, 3);
             cmdRow.Controls.Add(txtCmd, 1, 0);
             var btns = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Margin = new Padding(0) };
@@ -199,23 +244,23 @@ namespace PstrGui
             // --- risultati
             lvHops.Columns.Add("Hop", 45, HorizontalAlignment.Right);
             lvHops.Columns.Add("Host", 260);
-            lvHops.Columns.Add("Indirizzo IP", 150);
+            lvHops.Columns.Add(L.T("Indirizzo IP"), 150);
             lvHops.Columns.Add("AS", 90);
             lvHops.Columns.Add("Min (ms)", 75, HorizontalAlignment.Right);
-            lvHops.Columns.Add("Media (ms)", 80, HorizontalAlignment.Right);
+            lvHops.Columns.Add(L.T("Media (ms)"), 80, HorizontalAlignment.Right);
             lvHops.Columns.Add("Max (ms)", 75, HorizontalAlignment.Right);
-            lvHops.Columns.Add("Perdita", 65, HorizontalAlignment.Right);
-            lvHops.Columns.Add("Sonde", 55, HorizontalAlignment.Right);
+            lvHops.Columns.Add(L.T("Perdita"), 65, HorizontalAlignment.Right);
+            lvHops.Columns.Add(L.T("Sonde"), 55, HorizontalAlignment.Right);
             lvHops.Columns.Add("TOS / DSCP / ECN", 170);
-            lvHops.Columns.Add("Note", 160);
+            lvHops.Columns.Add(L.T("Note"), 160);
             var cm = new ContextMenuStrip();
-            cm.Items.Add("Copia righe selezionate", null, (s, e) => CopySelectedHops());
-            cm.Items.Add("Copia indirizzo IP", null, (s, e) => CopySelectedIp());
+            cm.Items.Add(L.T("Copia righe selezionate"), null, (s, e) => CopySelectedHops());
+            cm.Items.Add(L.T("Copia indirizzo IP"), null, (s, e) => CopySelectedIp());
             lvHops.ContextMenuStrip = cm;
 
-            var tpHops = new TabPage("Percorso");
+            var tpHops = new TabPage(L.T("Percorso"));
             tpHops.Controls.Add(lvHops);
-            var tpRaw = new TabPage("Output del tool");
+            var tpRaw = new TabPage(L.T("Output del tool"));
             tpRaw.Controls.Add(rtbRaw);
             tabs.TabPages.Add(tpHops);
             tabs.TabPages.Add(tpRaw);
@@ -240,12 +285,12 @@ namespace PstrGui
             cbEcn.Items.AddRange(EcnItems);
             cbEcn.SelectedIndex = 0;
 
-            tip.SetToolTip(cbTarget, "Nome host o indirizzo IPv4/IPv6 di destinazione");
-            tip.SetToolTip(numPort, "0 = porta predefinita del metodo (UDP 33434+, TCP 80, UDP fisso/DNS 53, QUIC 443)");
-            tip.SetToolTip(cbDscp, "Valore DSCP da impostare nei pacchetti (0–63). Il tool mostra anche il TOS ricevuto da ogni hop.");
-            tip.SetToolTip(chkAs, "Interroga i registri di routing (whois) per l'Autonomous System di ogni hop");
-            tip.SetToolTip(txtExtra, "Altre opzioni di Pietrasanta traceroute, separate da spazi (vedi menu ? > Guida opzioni)");
-            tip.SetToolTip(btnInstall, "Copia nella distribuzione WSL il binario Linux incluso in questo programma");
+            tip.SetToolTip(cbTarget, L.T("Nome host o indirizzo IPv4/IPv6 di destinazione"));
+            tip.SetToolTip(numPort, L.T("0 = porta predefinita del metodo (UDP 33434+, TCP 80, UDP fisso/DNS 53, QUIC 443)"));
+            tip.SetToolTip(cbDscp, L.T("Valore DSCP da impostare nei pacchetti (0–63). Il tool mostra anche il TOS ricevuto da ogni hop."));
+            tip.SetToolTip(chkAs, L.T("Interroga i registri di routing (whois) per l'Autonomous System di ogni hop"));
+            tip.SetToolTip(txtExtra, L.T("Altre opzioni di Pietrasanta traceroute, separate da spazi (vedi menu ? > Guida opzioni)"));
+            tip.SetToolTip(btnInstall, L.T("Copia nella distribuzione WSL il binario Linux incluso in questo programma"));
         }
 
         void WireEvents()
@@ -321,12 +366,12 @@ namespace PstrGui
         {
             if (!Wsl.IsWslPresent())
             {
-                SetToolLabel("WSL non presente", Color.Firebrick);
-                SetStatus("WSL non è installato. Usa Strumenti > Installa WSL + Ubuntu 24.04.");
+                SetToolLabel(L.T("WSL non presente"), Color.Firebrick);
+                SetStatus(L.T("WSL non è installato. Usa Strumenti > Installa Ubuntu 24.04 in WSL."));
                 btnInstall.Enabled = false;
                 return;
             }
-            SetToolLabel("Verifica WSL in corso…", SystemColors.ControlText);
+            SetToolLabel(L.T("Verifica WSL in corso…"), SystemColors.ControlText);
             btnRefresh.Enabled = false;
             try
             {
@@ -339,24 +384,23 @@ namespace PstrGui
                     var raw = Wsl.LastListRaw;
                     if (Wsl.SkippedDistros.Count > 0)
                     {
-                        SetToolLabel("Solo distribuzioni Docker Desktop (non utilizzabili)", Color.Firebrick);
-                        SetStatus("Installa Ubuntu: Strumenti > Installa Ubuntu 24.04 in WSL.");
+                        SetToolLabel(L.T("Solo distribuzioni Docker Desktop (non utilizzabili)"), Color.Firebrick);
+                        SetStatus(L.T("Installa Ubuntu: Strumenti > Installa Ubuntu 24.04 in WSL."));
                     }
                     else
                     {
-                        SetToolLabel("Nessuna distribuzione WSL per l'utente " + Environment.UserName, Color.Firebrick);
-                        SetStatus("Installa Ubuntu con Strumenti > Installa Ubuntu 24.04 in WSL, oppure vedi Strumenti > Diagnostica WSL.");
+                        SetToolLabel(L.F("Nessuna distribuzione WSL per l'utente {0}", Environment.UserName), Color.Firebrick);
+                        SetStatus(L.T("Installa Ubuntu con Strumenti > Installa Ubuntu 24.04 in WSL, oppure vedi Strumenti > Diagnostica WSL."));
                     }
                     tabs.SelectedIndex = 1;
-                    AppendRaw("=== Nessuna distribuzione WSL utilizzabile trovata ===", Color.Firebrick);
-                    AppendRaw("Utente Windows: " + Environment.UserDomainName + "\\" + Environment.UserName +
-                              "  (le distribuzioni WSL sono registrate per singolo utente)", Color.Firebrick);
+                    AppendRaw("=== " + L.T("Nessuna distribuzione WSL utilizzabile trovata") + " ===", Color.Firebrick);
+                    AppendRaw(L.F("Utente Windows: {0}  (le distribuzioni WSL sono registrate per singolo utente)", Environment.UserDomainName + "\\" + Environment.UserName), Color.Firebrick);
                     if (raw != null)
                     {
-                        AppendRaw("> wsl -l -v   [codice uscita " + raw.ExitCode + "]", Color.SteelBlue);
+                        AppendRaw("> wsl -l -v   " + L.F("[codice uscita {0}]", raw.ExitCode), Color.SteelBlue);
                         foreach (var l in raw.All.Replace("\r", "").Split('\n')) if (l.Trim().Length > 0) AppendRaw(l, rtbRaw.ForeColor);
                     }
-                    if (Wsl.SkippedDistros.Count > 0) AppendRaw("Scartate: " + string.Join(", ", Wsl.SkippedDistros), Color.Firebrick);
+                    if (Wsl.SkippedDistros.Count > 0) AppendRaw(L.F("Scartate: {0}", string.Join(", ", Wsl.SkippedDistros)), Color.Firebrick);
                     return;
                 }
                 var pick = list.FindIndex(d => d.Name == settings.LastDistro);
@@ -366,8 +410,8 @@ namespace PstrGui
             }
             catch (Exception ex)
             {
-                SetToolLabel("Errore WSL", Color.Firebrick);
-                SetStatus("Errore nel leggere le distribuzioni WSL: " + ex.Message);
+                SetToolLabel(L.T("Errore WSL"), Color.Firebrick);
+                SetStatus(L.F("Errore nel leggere le distribuzioni WSL: {0}", ex.Message));
             }
             finally { btnRefresh.Enabled = true; }
         }
@@ -378,34 +422,34 @@ namespace PstrGui
             if (d == null) return;
             if (d.Version == 1)
             {
-                SetToolLabel("Distribuzione WSL1: serve WSL2", Color.Firebrick);
-                SetStatus($"Converti la distribuzione con:  wsl --set-version {d.Name} 2");
+                SetToolLabel(L.T("Distribuzione WSL1: serve WSL2"), Color.Firebrick);
+                SetStatus(L.F("Converti la distribuzione con:  {0}", "wsl --set-version " + d.Name + " 2"));
                 btnInstall.Enabled = false; btnRun.Enabled = false;
                 return;
             }
-            SetToolLabel("Verifica in corso… (l'avvio di WSL può richiedere qualche secondo)", SystemColors.ControlText);
+            SetToolLabel(L.T("Verifica in corso… (l'avvio di WSL può richiedere qualche secondo)"), SystemColors.ControlText);
             btnInstall.Enabled = false;
             btnRun.Enabled = false;
             toolStatus = await Wsl.CheckToolAsync(d.Name);
             switch (toolStatus.State)
             {
                 case ToolState.Ready:
-                    SetToolLabel("Pronto – versione " + toolStatus.Version, Color.ForestGreen);
-                    SetStatus("Pronto.");
+                    SetToolLabel(L.F("Pronto – versione {0}", toolStatus.Version), Color.ForestGreen);
+                    SetStatus(L.T("Pronto."));
                     break;
                 case ToolState.NotInstalled:
-                    SetToolLabel("Non installato in questa distribuzione", Color.DarkOrange);
-                    SetStatus("Premi \"Installa / aggiorna tool in WSL\" (operazione di pochi secondi).");
+                    SetToolLabel(L.T("Non installato in questa distribuzione"), Color.DarkOrange);
+                    SetStatus(L.T("Premi \"Installa / aggiorna tool in WSL\" (operazione di pochi secondi)."));
                     break;
                 case ToolState.Outdated:
-                    SetToolLabel("Installato ma diverso dalla versione inclusa – aggiorna", Color.DarkOrange);
+                    SetToolLabel(L.T("Installato ma diverso dalla versione inclusa – aggiorna"), Color.DarkOrange);
                     break;
                 case ToolState.BrokenDeps:
-                    SetToolLabel("Installato ma non si avvia (librerie mancanti) – reinstalla", Color.Firebrick);
+                    SetToolLabel(L.T("Installato ma non si avvia (librerie mancanti) – reinstalla"), Color.Firebrick);
                     break;
                 default:
-                    SetToolLabel("Impossibile verificare", Color.Firebrick);
-                    SetStatus("WSL ha risposto: " + FirstLine(toolStatus.Detail));
+                    SetToolLabel(L.T("Impossibile verificare"), Color.Firebrick);
+                    SetStatus(L.F("WSL ha risposto: {0}", FirstLine(toolStatus.Detail)));
                     break;
             }
             btnInstall.Enabled = true;
@@ -415,15 +459,15 @@ namespace PstrGui
         async Task InstallToolAsync()
         {
             var d = SelectedDistro;
-            if (d == null) { MessageBox.Show(this, "Seleziona prima una distribuzione WSL.", Text); return; }
+            if (d == null) { MessageBox.Show(this, L.T("Seleziona prima una distribuzione WSL."), Text); return; }
             if (proc != null) return;
             btnInstall.Enabled = btnRun.Enabled = false;
             tabs.SelectedIndex = 1;
-            AppendRaw($"=== Installazione di Pietrasanta traceroute in WSL ({d}) ===", Color.SteelBlue);
-            SetStatus("Installazione in corso…");
+            AppendRaw("=== " + L.F("Installazione di Pietrasanta traceroute in WSL ({0})", d) + " ===", Color.SteelBlue);
+            SetStatus(L.T("Installazione in corso…"));
             var r = await Wsl.InstallToolAsync(d, msg => Ui(() => AppendRaw(msg, Color.SteelBlue)));
-            if (r.ExitCode == 0) SetStatus("Installazione completata.");
-            else SetStatus("Installazione non riuscita: vedi la scheda \"Output del tool\".");
+            if (r.ExitCode == 0) SetStatus(L.T("Installazione completata."));
+            else SetStatus(L.T("Installazione non riuscita: vedi la scheda \"Output del tool\"."));
             await CheckToolAsync();
         }
 
@@ -431,23 +475,21 @@ namespace PstrGui
         {
             bool now = Wsl.GetNetworkingMode() == "mirrored";
             var msg = now
-                ? "Disattivare la rete \"mirrored\" e tornare alla modalità NAT predefinita di WSL?"
-                : "La modalità di rete \"mirrored\" fa usare a WSL direttamente le schede di rete di Windows: il traceroute non mostra più l'hop " +
-                  "aggiuntivo del NAT interno di WSL ed è più fedele.\n\nRichiede Windows 11 22H2 o successivo. Verrà modificato il file:\n" +
-                  Wsl.WslConfigPath + "\n(con copia di backup).";
-            if (MessageBox.Show(this, msg + "\n\nPer applicare la modifica WSL deve essere riavviato (wsl --shutdown): tutte le distribuzioni in esecuzione verranno chiuse. Procedere?",
+                ? L.T("Disattivare la rete \"mirrored\" e tornare alla modalità NAT predefinita di WSL?")
+                : L.F("La modalità di rete \"mirrored\" fa usare a WSL direttamente le schede di rete di Windows: il traceroute non mostra più l'hop aggiuntivo del NAT interno di WSL ed è più fedele.\n\nRichiede Windows 11 22H2 o successivo. Verrà modificato il file:\n{0}\n(con copia di backup).", Wsl.WslConfigPath);
+            if (MessageBox.Show(this, msg + "\n\n" + L.T("Per applicare la modifica WSL deve essere riavviato (wsl --shutdown): tutte le distribuzioni in esecuzione verranno chiuse. Procedere?"),
                     Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             try
             {
                 var bak = Wsl.SetMirrored(!now);
                 Wsl.RunAsync(new[] { "--shutdown" }, null, 60000).Wait(60000);
                 UpdateNetLabel();
-                MessageBox.Show(this, "Impostazione applicata." + (bak != null ? "\nBackup: " + bak : ""), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, L.T("Impostazione applicata.") + (bak != null ? "\nBackup: " + bak : ""), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _ = CheckToolAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Errore: " + ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, L.F("Errore: {0}", ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -455,40 +497,33 @@ namespace PstrGui
         {
             string mode;
             try { mode = Wsl.GetNetworkingMode(); } catch { mode = "?"; }
-            lblNet.Text = "Rete WSL: " + (mode == "mirrored" ? "mirrored" : mode + "  (consigliata: mirrored, menu Strumenti)");
+            lblNet.Text = L.F("Rete WSL: {0}", mode == "mirrored" ? "mirrored" : mode + "  " + L.T("(consigliata: mirrored, menu Strumenti)"));
             if (miMirrored != null) miMirrored.Checked = mode == "mirrored";
         }
 
         void InstallWsl()
         {
             if (MessageBox.Show(this,
-                    "Verrà aperta una finestra di comando che esegue, con il TUO utente (" + Environment.UserName + "):\n\n" +
-                    "    wsl --install -d Ubuntu-24.04\n\n" +
-                    "Se il componente WSL non è ancora attivo, Windows chiederà la conferma da amministratore solo per quella parte " +
-                    "e potrebbe essere necessario riavviare il PC (poi ripetere questo comando).\n\n" +
-                    "Al termine Ubuntu chiede di creare un utente Linux: completare quel passaggio, chiudere la finestra e premere " +
-                    "\"Aggiorna\" in questo programma.\n\n" +
-                    "IMPORTANTE: non eseguire l'installazione di Ubuntu con un altro account amministratore, altrimenti la distribuzione " +
-                    "viene registrata per quell'account e non è visibile qui.\n\nProcedere?",
+                    L.F("Verrà aperta una finestra di comando che esegue, con il TUO utente ({0}):\n\n    wsl --install -d Ubuntu-24.04\n\nSe il componente WSL non è ancora attivo, Windows chiederà la conferma da amministratore solo per quella parte e potrebbe essere necessario riavviare il PC (poi ripetere questo comando).\n\nAl termine Ubuntu chiede di creare un utente Linux: completare quel passaggio, chiudere la finestra e premere \"Aggiorna\" in questo programma.\n\nIMPORTANTE: non eseguire l'installazione di Ubuntu con un altro account amministratore, altrimenti la distribuzione viene registrata per quell'account e non è visibile qui.\n\nProcedere?", Environment.UserName),
                     Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes) return;
             try
             {
                 var cmd = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmd.exe");
                 Process.Start(new ProcessStartInfo(cmd, "/k \"" + Wsl.WslExe + "\" --install -d Ubuntu-24.04") { UseShellExecute = true });
             }
-            catch (Exception ex) { MessageBox.Show(this, "Avvio non riuscito: " + ex.Message, Text); }
+            catch (Exception ex) { MessageBox.Show(this, L.F("Avvio non riuscito: {0}", ex.Message), Text); }
         }
 
         async Task RunDiagnosticsAsync()
         {
             tabs.SelectedIndex = 1;
-            AppendRaw("=== Diagnostica WSL (" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ") ===", Color.SteelBlue);
-            SetStatus("Diagnostica in corso…");
+            AppendRaw("=== " + L.T("Diagnostica WSL") + " (" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ") ===", Color.SteelBlue);
+            SetStatus(L.T("Diagnostica in corso…"));
             AppendRaw(SettingsInfo().Replace("\n", "  "), rtbRaw.ForeColor);
             var text = await Wsl.DiagnoseAsync();
             foreach (var l in text.Split('\n')) AppendRaw(l, l.StartsWith(">") ? Color.SteelBlue : rtbRaw.ForeColor);
             btnTxt.Enabled = true;
-            SetStatus("Diagnostica completata: vedi la scheda \"Output del tool\" (esportabile con \"Esporta report TXT\").");
+            SetStatus(L.T("Diagnostica completata: vedi la scheda \"Output del tool\" (esportabile con \"Esporta report TXT\")."));
         }
 
         void OpenShell()
@@ -504,10 +539,10 @@ namespace PstrGui
             var d = SelectedDistro;
             if (d == null || toolStatus == null || toolStatus.State == ToolState.NotInstalled)
             {
-                MessageBox.Show(this, "Installa prima il tool nella distribuzione WSL.", Text); return;
+                MessageBox.Show(this, L.T("Installa prima il tool nella distribuzione WSL."), Text); return;
             }
             var r = await Wsl.ExecRootAsync(d, new[] { Wsl.ToolPath, "--help" });
-            var f = new Form { Text = "Pietrasanta traceroute – opzioni", Size = new Size(860, 700), StartPosition = FormStartPosition.CenterParent, Font = Font };
+            var f = new Form { Text = L.T("Pietrasanta traceroute – opzioni"), Size = new Size(860, 700), StartPosition = FormStartPosition.CenterParent, Font = Font };
             f.Controls.Add(new TextBox { Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Both, WordWrap = false, Dock = DockStyle.Fill, Font = new Font("Consolas", 9.5f), Text = r.All.Replace("\r", "").Replace("\n", "\r\n") });
             f.Show(this);
         }
@@ -515,22 +550,21 @@ namespace PstrGui
         string SettingsInfo()
         {
             var target = Settings.TargetPath;
-            return "Preferenze (" + (string.Equals(target, Settings.LocalPath, StringComparison.OrdinalIgnoreCase)
-                       ? "modalità portable" : "cartella del programma in sola lettura: uso %APPDATA%") + "):\n" + target +
+            return L.F("Preferenze ({0}):", string.Equals(target, Settings.LocalPath, StringComparison.OrdinalIgnoreCase)
+                       ? L.T("modalità portable") : L.T("cartella del programma in sola lettura: uso %APPDATA%")) + "\n" + target +
                    (settings.LoadedFrom.Length > 0 && !string.Equals(settings.LoadedFrom, target, StringComparison.OrdinalIgnoreCase)
-                       ? "\n(importate da: " + settings.LoadedFrom + ")" : "");
+                       ? "\n" + L.F("(importate da: {0})", settings.LoadedFrom) : "");
         }
 
         void ShowAbout()
         {
             MessageBox.Show(this,
-                "Pietrasanta Traceroute GUI per Windows – v" + AppVersion + "\n\n" +
-                "Interfaccia grafica che esegue Pietrasanta traceroute (Catchpoint) all'interno di WSL2.\n" +
-                "Il binario Linux incluso (Ubuntu 24.04 x86_64, v0.1.36) è distribuito sotto licenza GNU GPL v2 o successiva;\n" +
-                "sorgenti: https://github.com/catchpoint/Networking.traceroute\n\n" +
-                "SHA-256 del binario incluso:\n" + Wsl.EmbeddedHash + "\n\n" +
-                SettingsInfo(),
-                "Informazioni", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                L.T("Pietrasanta Traceroute GUI per Windows") + " – v" + AppVersion + "\n\n" +
+                L.T("Interfaccia grafica che esegue Pietrasanta traceroute (Catchpoint) all'interno di WSL2.\nIl binario Linux incluso (Ubuntu 24.04 x86_64, v0.1.36) è distribuito sotto licenza GNU GPL v2 o successiva;\nsorgenti: https://github.com/catchpoint/Networking.traceroute") + "\n\n" +
+                L.T("SHA-256 del binario incluso:") + "\n" + Wsl.EmbeddedHash + "\n\n" +
+                SettingsInfo() + "\n\n" +
+                L.F("Lingua: {0}", L.Name) + "\n" + RepoUrl,
+                L.T("Informazioni"), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // ================================================================= comando
@@ -559,18 +593,18 @@ namespace PstrGui
             var dscp = LeadingInt(dscpText);
             if (dscp.HasValue)
             {
-                if (dscp < 0 || dscp > 63) error = "DSCP deve essere tra 0 e 63.";
+                if (dscp < 0 || dscp > 63) error = L.T("DSCP deve essere tra 0 e 63.");
                 else a.Add("--dscp=" + dscp.Value);
             }
-            else if (dscpText.Length > 0) error = "Valore DSCP non valido (0–63).";
+            else if (dscpText.Length > 0) error = L.T("Valore DSCP non valido (0–63).");
             var ecn = LeadingInt(cbEcn.Text);
             if (ecn.HasValue) a.Add("--ecn=" + ecn.Value);
 
             a.AddRange(SplitExtra(txtExtra.Text));
 
             var target = cbTarget.Text.Trim();
-            if (target.Length == 0) error = error ?? "Indica la destinazione.";
-            else if (!TargetRx.IsMatch(target)) error = error ?? "Destinazione non valida (usa un nome host o un indirizzo IP).";
+            if (target.Length == 0) error = error ?? L.T("Indica la destinazione.");
+            else if (!TargetRx.IsMatch(target)) error = error ?? L.T("Destinazione non valida (usa un nome host o un indirizzo IP).");
             a.Add(target);
             return a;
         }
@@ -592,8 +626,9 @@ namespace PstrGui
         void UpdateCommandPreview()
         {
             var args = BuildArgs(out _);
-            if (args.Count > 0 && args[args.Count - 1].Length == 0) args[args.Count - 1] = "<destinazione>";
-            txtCmd.Text = "traceroute " + string.Join(" ", args.Select(a => a == "<destinazione>" ? a : ShellQuote(a)));
+            var placeholder = "<" + L.T("destinazione") + ">";
+            bool empty = args.Count > 0 && args[args.Count - 1].Length == 0;
+            txtCmd.Text = "traceroute " + string.Join(" ", args.Select((a, i) => empty && i == args.Count - 1 ? placeholder : ShellQuote(a)));
         }
 
         // ================================================================= esecuzione
@@ -602,7 +637,7 @@ namespace PstrGui
         {
             if (proc != null) return;
             var distro = SelectedDistro;
-            if (distro == null) { MessageBox.Show(this, "Nessuna distribuzione WSL selezionata.", Text); return; }
+            if (distro == null) { MessageBox.Show(this, L.T("Nessuna distribuzione WSL selezionata."), Text); return; }
             var args = BuildArgs(out var err);
             if (err != null) { MessageBox.Show(this, err, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
@@ -650,7 +685,7 @@ namespace PstrGui
             catch (Exception ex)
             {
                 proc = null;
-                MessageBox.Show(this, "Impossibile avviare wsl.exe: " + ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, L.F("Impossibile avviare wsl.exe: {0}", ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -658,7 +693,7 @@ namespace PstrGui
             SetRunning(true);
             sw.Restart();
             timer.Start();
-            SetStatus("In esecuzione verso " + cbTarget.Text.Trim() + " …");
+            SetStatus(L.F("In esecuzione verso {0} …", cbTarget.Text.Trim()));
             tabs.SelectedIndex = 0;
         }
 
@@ -676,7 +711,7 @@ namespace PstrGui
             if (TracerouteParser.TryParseSummary(line, summary))
             {
                 if (summary.Header != null && line.TrimStart().StartsWith("traceroute to"))
-                    SetStatus("In esecuzione: " + summary.Header);
+                    SetStatus(L.F("In esecuzione: {0}", summary.Header));
                 return;
             }
             var hop = TracerouteParser.ParseHopLine(line);
@@ -691,7 +726,7 @@ namespace PstrGui
             var cells = new[]
             {
                 h.Hop.ToString(),
-                h.NoReply ? "* (nessuna risposta)" : h.HostDisplay,
+                h.NoReply ? "* " + L.T("(nessuna risposta)") : h.HostDisplay,
                 h.IpDisplay,
                 h.AsDisplay,
                 Fmt(h.Min), Fmt(h.Avg), Fmt(h.Max),
@@ -749,14 +784,14 @@ namespace PstrGui
                 foreach (var h in hops.Values.Where(x => x.Ips.Contains(summary.TargetIp)).ToList()) AddOrUpdateHop(h);
 
             var parts = new List<string>();
-            if (stopRequested) parts.Add("Interrotto dall'utente");
-            else if (code != 0 && summary.Header == null) parts.Add("Errore (codice " + code + "): vedi la scheda \"Output del tool\"");
-            else parts.Add("Completato");
-            if (summary.DestinationReached.HasValue) parts.Add("destinazione raggiunta: " + (summary.DestinationReached.Value ? "SÌ" : "NO"));
-            if (hops.Count > 0) parts.Add("hop: " + hops.Keys.Max());
-            if (summary.Duration != null) parts.Add("durata: " + summary.Duration);
+            if (stopRequested) parts.Add(L.T("Interrotto dall'utente"));
+            else if (code != 0 && summary.Header == null) parts.Add(L.F("Errore (codice {0}): vedi la scheda \"Output del tool\"", code));
+            else parts.Add(L.T("Completato"));
+            if (summary.DestinationReached.HasValue) parts.Add(L.F("destinazione raggiunta: {0}", summary.DestinationReached.Value ? L.T("SÌ") : "NO"));
+            if (hops.Count > 0) parts.Add(L.F("hop: {0}", hops.Keys.Max()));
+            if (summary.Duration != null) parts.Add(L.F("durata: {0}", summary.Duration));
             if (summary.PathMtu != null) parts.Add("Path MTU: " + summary.PathMtu);
-            if (summary.TimedOut == true) parts.Add("timeout globale raggiunto");
+            if (summary.TimedOut == true) parts.Add(L.T("timeout globale raggiunto"));
             SetStatus(string.Join("  –  ", parts));
             if (code != 0 && summary.Header == null && !stopRequested) tabs.SelectedIndex = 1;
             btnCsv.Enabled = btnTxt.Enabled = rtbRaw.TextLength > 0;
@@ -767,7 +802,7 @@ namespace PstrGui
             if (proc == null) return;
             stopRequested = true;
             btnStop.Enabled = false;
-            SetStatus("Interruzione in corso…");
+            SetStatus(L.T("Interruzione in corso…"));
             if (linuxPid.HasValue)
                 await Wsl.ExecRootAsync(lastDistro, new[] { "kill", "-INT", linuxPid.Value.ToString() }, null, 15000);
             await Task.Delay(1500);
@@ -800,7 +835,7 @@ namespace PstrGui
 
         void ExportCsv()
         {
-            if (hops.Count == 0) { MessageBox.Show(this, "Nessun risultato da esportare.", Text); return; }
+            if (hops.Count == 0) { MessageBox.Show(this, L.T("Nessun risultato da esportare."), Text); return; }
             using (var dlg = new SaveFileDialog { Filter = "CSV (*.csv)|*.csv", FileName = DefaultFileName("csv") })
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
@@ -820,33 +855,35 @@ namespace PstrGui
                     }.Select(Q)));
                 }
                 File.WriteAllText(dlg.FileName, sb.ToString(), new UTF8Encoding(true));
-                SetStatus("CSV salvato: " + dlg.FileName);
+                SetStatus(L.F("CSV salvato: {0}", dlg.FileName));
             }
         }
 
         void ExportTxt()
         {
-            if (rtbRaw.TextLength == 0) { MessageBox.Show(this, "Nessun output da esportare.", Text); return; }
-            using (var dlg = new SaveFileDialog { Filter = "Testo (*.txt)|*.txt", FileName = DefaultFileName("txt") })
+            if (rtbRaw.TextLength == 0) { MessageBox.Show(this, L.T("Nessun output da esportare."), Text); return; }
+            using (var dlg = new SaveFileDialog { Filter = L.T("Testo") + " (*.txt)|*.txt", FileName = DefaultFileName("txt") })
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
                 var sb = new StringBuilder();
-                sb.AppendLine("PIETRASANTA TRACEROUTE – REPORT DI ESECUZIONE");
+                // Etichette allineate a 22 caratteri, nella lingua dell'interfaccia
+                void Line(string label, string value) => sb.AppendLine(label.PadRight(22) + ": " + value);
+                sb.AppendLine(L.T("PIETRASANTA TRACEROUTE – REPORT DI ESECUZIONE"));
                 sb.AppendLine(new string('=', 60));
-                sb.AppendLine("Data/ora locale     : " + lastStartLocal.ToString("yyyy-MM-dd HH:mm:ss zzz"));
-                sb.AppendLine("Data/ora UTC        : " + lastStartUtc.ToString("yyyy-MM-dd HH:mm:ss") + "Z");
-                sb.AppendLine("Host Windows        : " + Environment.MachineName + " (utente " + Environment.UserName + ")");
-                sb.AppendLine("Distribuzione WSL   : " + lastDistro + "   rete WSL: " + Wsl.GetNetworkingMode());
-                sb.AppendLine("Versione tool       : Pietrasanta traceroute " + lastToolVersion + "  (SHA-256 " + Wsl.EmbeddedHash + ")");
-                sb.AppendLine("GUI                 : Pietrasanta Traceroute GUI v" + AppVersion);
-                sb.AppendLine("Comando             : " + lastCommand);
-                if (summary.DestinationReached.HasValue) sb.AppendLine("Destinazione raggiunta: " + (summary.DestinationReached.Value ? "sì" : "no"));
-                if (summary.Duration != null) sb.AppendLine("Durata              : " + summary.Duration);
-                if (summary.PathMtu != null) sb.AppendLine("Path MTU            : " + summary.PathMtu);
+                Line(L.T("Data/ora locale"), lastStartLocal.ToString("yyyy-MM-dd HH:mm:ss zzz"));
+                Line(L.T("Data/ora UTC"), lastStartUtc.ToString("yyyy-MM-dd HH:mm:ss") + "Z");
+                Line(L.T("Host Windows"), L.F("{0} (utente {1})", Environment.MachineName, Environment.UserName));
+                Line(L.T("Distribuzione WSL"), lastDistro + "   " + L.F("rete WSL: {0}", Wsl.GetNetworkingMode()));
+                Line(L.T("Versione tool"), "Pietrasanta traceroute " + lastToolVersion + "  (SHA-256 " + Wsl.EmbeddedHash + ")");
+                Line("GUI", "Pietrasanta Traceroute GUI v" + AppVersion);
+                Line(L.T("Comando"), lastCommand);
+                if (summary.DestinationReached.HasValue) Line(L.T("Destinazione raggiunta"), summary.DestinationReached.Value ? L.T("sì") : "no");
+                if (summary.Duration != null) Line(L.T("Durata"), summary.Duration);
+                if (summary.PathMtu != null) Line("Path MTU", summary.PathMtu);
                 sb.AppendLine(new string('-', 60));
                 sb.AppendLine(rtbRaw.Text.Replace("\r\n", "\n").Replace("\n", "\r\n"));
                 File.WriteAllText(dlg.FileName, sb.ToString(), new UTF8Encoding(true));
-                SetStatus("Report salvato: " + dlg.FileName);
+                SetStatus(L.F("Report salvato: {0}", dlg.FileName));
             }
         }
 

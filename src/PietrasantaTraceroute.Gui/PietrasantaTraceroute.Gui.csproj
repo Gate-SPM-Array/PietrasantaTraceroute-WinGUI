@@ -7,7 +7,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <RootNamespace>PstrGui</RootNamespace>
-    <AssemblyName>PietrasantaTracerouteGUI_v1.2</AssemblyName>
+    <AssemblyName>PietrasantaTracerouteGUI_v1.2.1</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>res\app.ico</ApplicationIcon>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -15,11 +15,14 @@
     <Product>Pietrasanta Traceroute GUI per Windows (WSL)</Product>
     <Company>DGR - ICT GRC Consulting</Company>
     <Copyright>GUI: DGR - ICT GRC Consulting. Traceroute: Catchpoint Systems / D. Butskoy (GPL v2+)</Copyright>
-    <Version>1.2.0</Version>
-    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.1</Version>
+    <FileVersion>1.2.1.0</FileVersion>
     <DebugType>none</DebugType>
     <Nullable>disable</Nullable>
     <Deterministic>true</Deterministic>
+    <!-- Build riproducibile: senza questa riga l'SDK aggiunge alla versione l'hash del commit git
+         (1.2.1+abc123...) e lo stesso sorgente produce exe diversi dentro e fuori dal repository -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +33,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="res\pietrasanta-traceroute" LogicalName="pietrasanta-traceroute.bin" />
+    <!-- Inglese incorporato (l'exe da solo resta autosufficiente) e copiato in lang\ accanto all'exe, modificabile -->
+    <EmbeddedResource Include="..\..\lang\en.json" LogicalName="lang.en.json" />
+    <None Include="..\..\lang\*.json" Link="lang\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Compile Remove="tests\**" />
   </ItemGroup>
 

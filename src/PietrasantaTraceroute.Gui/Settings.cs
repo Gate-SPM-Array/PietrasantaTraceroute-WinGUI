@@ -26,6 +26,8 @@ namespace PstrGui
         public string LastDistro = "";
         public int MethodIndex = 0;
         public bool NoDns = false;
+        /// <summary>Codice della lingua dell'interfaccia ("" = automatica, secondo Windows).</summary>
+        public string Language = "";
         public List<string> TargetHistory = new List<string>();
 
         /// <summary>File da cui sono state lette le preferenze ("" = valori predefiniti).</summary>
@@ -74,6 +76,7 @@ namespace PstrGui
                     case "LastDistro": LastDistro = v; break;
                     case "MethodIndex": int.TryParse(v, out MethodIndex); break;
                     case "NoDns": NoDns = v == "1"; break;
+                    case "Language": Language = v; break;
                     case "Target": if (v.Length > 0 && !TargetHistory.Contains(v)) TargetHistory.Add(v); break;
                 }
             }
@@ -86,6 +89,7 @@ namespace PstrGui
             sb.AppendLine("LastDistro=" + LastDistro);
             sb.AppendLine("MethodIndex=" + MethodIndex);
             sb.AppendLine("NoDns=" + (NoDns ? "1" : "0"));
+            sb.AppendLine("Language=" + Language);
             foreach (var t in TargetHistory.Take(20)) sb.AppendLine("Target=" + t);
             var content = sb.ToString();
 

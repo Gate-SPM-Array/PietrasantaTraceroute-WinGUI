@@ -17,7 +17,7 @@ namespace PstrGui
         public int Version;
         public string State;
         public override string ToString() =>
-            Name + (IsDefault ? "  (predefinita)" : "") + (Version == 1 ? "  [WSL1 - non supportata]" : "");
+            Name + (IsDefault ? "  " + L.T("(predefinita)") : "") + (Version == 1 ? "  " + L.T("[WSL1 - non supportata]") : "");
     }
 
     public sealed class RunResult
@@ -134,7 +134,7 @@ namespace PstrGui
                     if (!p.WaitForExit(timeoutMs))
                     {
                         try { p.Kill(); } catch { }
-                        return new RunResult { ExitCode = -1, StdErr = "Timeout dopo " + (timeoutMs / 1000) + " s" };
+                        return new RunResult { ExitCode = -1, StdErr = L.F("Timeout dopo {0} s", timeoutMs / 1000) };
                     }
                     Task.WaitAll(new Task[] { tOut, tErr }, 5000);
                     return new RunResult
@@ -207,9 +207,9 @@ namespace PstrGui
         public static async Task<string> DiagnoseAsync()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Utente Windows : " + Environment.UserDomainName + "\\" + Environment.UserName);
-            sb.AppendLine("Processo 64 bit: " + Environment.Is64BitProcess + "   OS 64 bit: " + Environment.Is64BitOperatingSystem);
-            sb.AppendLine("wsl.exe        : " + WslExe + (File.Exists(WslExe) ? "" : "  (NON TROVATO)"));
+            sb.AppendLine(L.T("Utente Windows") + " : " + Environment.UserDomainName + "\\" + Environment.UserName);
+            sb.AppendLine(L.F("Processo 64 bit: {0}   OS 64 bit: {1}", Environment.Is64BitProcess, Environment.Is64BitOperatingSystem));
+            sb.AppendLine("wsl.exe        : " + WslExe + (File.Exists(WslExe) ? "" : "  " + L.T("(NON TROVATO)")));
             foreach (var args in new[] { new[] { "--version" }, new[] { "--status" }, new[] { "-l", "-v" } })
             {
                 sb.AppendLine();
@@ -217,11 +217,11 @@ namespace PstrGui
                 try
                 {
                     var r = await RunAsync(args, null, 60000).ConfigureAwait(false);
-                    sb.AppendLine("[codice uscita " + r.ExitCode + "]");
+                    sb.AppendLine(L.F("[codice uscita {0}]", r.ExitCode));
                     if (r.StdOut.Trim().Length > 0) sb.AppendLine(r.StdOut.TrimEnd());
                     if (r.StdErr.Trim().Length > 0) sb.AppendLine("[stderr] " + r.StdErr.TrimEnd());
                 }
-                catch (Exception ex) { sb.AppendLine("ERRORE: " + ex.Message); }
+                catch (Exception ex) { sb.AppendLine(L.F("ERRORE: {0}", ex.Message)); }
             }
             return sb.ToString().Replace("\r", "");
         }
@@ -283,25 +283,25 @@ namespace PstrGui
         /// <summary>Copia in WSL il binario incorporato e lo script di avvio; installa libcrypto se manca.</summary>
         public static async Task<RunResult> InstallToolAsync(string distro, Action<string> log)
         {
-            log("Copia del binario in " + ToolPath + " ...");
+            log(L.F("Copia del binario in {0} ...", ToolPath));
             var b64 = Encoding.ASCII.GetBytes(Convert.ToBase64String(EmbeddedBinary(), Base64FormattingOptions.InsertLineBreaks).Replace("\r\n", "\n") + "\n");
             var r = await ShRootAsync(distro,
                 "set -e; mkdir -p /usr/local/bin; " +
                 "base64 -d > " + ToolPath + ".tmp; chmod 755 " + ToolPath + ".tmp; mv -f " + ToolPath + ".tmp " + ToolPath,
                 b64).ConfigureAwait(false);
-            if (r.ExitCode != 0) { log("ERRORE: " + r.All); return r; }
+            if (r.ExitCode != 0) { log(L.F("ERRORE: {0}", r.All)); return r; }
 
-            log("Installazione script di avvio " + WrapperPath + " ...");
+            log(L.F("Installazione script di avvio {0} ...", WrapperPath));
             r = await ShRootAsync(distro,
                 "set -e; cat > " + WrapperPath + ".tmp; chmod 755 " + WrapperPath + ".tmp; mv -f " + WrapperPath + ".tmp " + WrapperPath,
                 Encoding.ASCII.GetBytes(WrapperScript)).ConfigureAwait(false);
-            if (r.ExitCode != 0) { log("ERRORE: " + r.All); return r; }
+            if (r.ExitCode != 0) { log(L.F("ERRORE: {0}", r.All)); return r; }
 
-            log("Verifica esecuzione ...");
+            log(L.T("Verifica esecuzione ..."));
             r = await ExecRootAsync(distro, new[] { ToolPath, "-V" }).ConfigureAwait(false);
             if (r.ExitCode != 0)
             {
-                log("Il tool non parte (" + r.All.Split('\n').FirstOrDefault() + "). Installo la libreria OpenSSL 3 (libcrypto) ...");
+                log(L.F("Il tool non parte ({0}). Installo la libreria OpenSSL 3 (libcrypto) ...", r.All.Split('\n').FirstOrDefault()));
                 var dep = await ShRootAsync(distro,
                     "export DEBIAN_FRONTEND=noninteractive; " +
                     "if command -v apt-get >/dev/null; then apt-get update -q && (apt-get install -y -q libssl3t64 || apt-get install -y -q libssl3); " +
@@ -313,8 +313,8 @@ namespace PstrGui
                 r = await ExecRootAsync(distro, new[] { ToolPath, "-V" }).ConfigureAwait(false);
                 if (r.ExitCode != 0)
                 {
-                    log("ERRORE: il binario non si avvia in questa distribuzione: " + r.All);
-                    log("Suggerimento: usare Ubuntu 24.04 (wsl --install -d Ubuntu-24.04).");
+                    log(L.F("ERRORE: il binario non si avvia in questa distribuzione: {0}", r.All));
+                    log(L.T("Suggerimento: usare Ubuntu 24.04 (wsl --install -d Ubuntu-24.04)."));
                     return r;
                 }
             }
