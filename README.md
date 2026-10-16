@@ -97,6 +97,6 @@ third_party/pietrasanta-traceroute-0.1.36/   corresponding upstream source (GPL)
 
 ## 7. License
 
-- The GUI is released under the **MIT** license (see [LICENSE](LICENSE)).
+- The GUI (`src/`, `tests/`, documentation) is released under the **MIT** license (see [LICENSE](LICENSE)). The MIT license does not cover the Pietrasanta traceroute binary or `third_party/`.
 - Pietrasanta traceroute is © Catchpoint Systems, Inc. and Dmitry Butskoy, licensed under the **GNU GPL v2 or later**. Its binary is included unmodified as a separate program. The corresponding source is in [`third_party/`](third_party/pietrasanta-traceroute-0.1.36).
 - See [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).

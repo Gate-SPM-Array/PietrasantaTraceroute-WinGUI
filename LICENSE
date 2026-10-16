@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
--------------------------------------------------------------------------------
-This license covers the Windows GUI only (src/, tests/, documentation).
-The Linux program Pietrasanta traceroute, included as a separate executable in
-src/PietrasantaTraceroute.Gui/res/ and as source code in third_party/, is
-licensed under the GNU General Public License v2 or later: see
-third_party/pietrasanta-traceroute-0.1.36/COPYING and THIRD-PARTY-NOTICES.txt.
