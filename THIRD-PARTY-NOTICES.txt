@@ -1,0 +1,30 @@
+Pietrasanta Traceroute GUI utilizza i seguenti componenti di terze parti:
+
+Pietrasanta traceroute 0.1.36
+  Copyright (c) 2023 Alessandro Improta, Luca Sani, Catchpoint Systems, Inc.
+  Copyright (c) 2016 Dmitry Butskoy
+  https://github.com/catchpoint/Networking.traceroute
+  Licenza: GNU General Public License v2 o successiva (GPL-2.0-or-later)
+
+  - Il binario Linux (Ubuntu 24.04 x86_64, distribuito dal progetto upstream in
+    binaries/ubuntu24/x86_64/traceroute) e' incluso SENZA MODIFICHE come programma
+    separato in src/PietrasantaTraceroute.Gui/res/pietrasanta-traceroute ed e'
+    incorporato come risorsa nell'eseguibile della GUI, che lo copia ed esegue
+    dentro WSL2.
+    SHA-256: a998f88c2c9a2de1f71e5d6507ad9d6998dd1d2866361bcd93831689f1511902
+  - Il sorgente completo corrispondente, versione 0.1.36, e' incluso in
+    third_party/pietrasanta-traceroute-0.1.36/ (senza la cartella binaries/
+    con i binari precompilati per le altre distribuzioni), con il testo della
+    licenza in COPYING.
+
+.NET Framework 4.8 / Windows Forms
+  Componente di Windows, non incluso nel pacchetto.
+
+Microsoft.NETFramework.ReferenceAssemblies (solo compilazione)
+  https://github.com/microsoft/dotnet  -  Licenza: MIT
+
+xUnit.net (solo test)
+  https://github.com/xunit/xunit  -  Licenza: Apache License 2.0
+
+Nota: la GUI e' scritta da zero e comunica con Pietrasanta traceroute solo
+avviandolo da riga di comando e leggendone l'output testuale.

@@ -1,0 +1,8 @@
+* text=auto
+*.png binary
+*.ico binary
+*.zip binary
+# Linux ELF binary embedded in the GUI: never touch line endings
+src/PietrasantaTraceroute.Gui/res/pietrasanta-traceroute binary
+# shell scripts of the upstream source must keep LF
+*.sh text eol=lf

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RootNamespace>PstrGui</RootNamespace>
+    <AssemblyName>PietrasantaTracerouteGUI_v1.2</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>res\app.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyTitle>Pietrasanta Traceroute GUI</AssemblyTitle>
+    <Product>Pietrasanta Traceroute GUI per Windows (WSL)</Product>
+    <Company>DGR - ICT GRC Consulting</Company>
+    <Copyright>GUI: DGR - ICT GRC Consulting. Traceroute: Catchpoint Systems / D. Butskoy (GPL v2+)</Copyright>
+    <Version>1.2.0</Version>
+    <FileVersion>1.2.0.0</FileVersion>
+    <DebugType>none</DebugType>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="res\pietrasanta-traceroute" LogicalName="pietrasanta-traceroute.bin" />
+    <Compile Remove="tests\**" />
+  </ItemGroup>
+
+</Project>

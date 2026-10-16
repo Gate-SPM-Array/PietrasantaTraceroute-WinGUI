@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+publish/
+dist/
+*.user
+*.suo
+.vs/
+.idea/
+TestResults/
+
+# Runtime data of the portable app (never commit: contains personal targets and WSL names)
+PietrasantaTracerouteGUI.settings.ini
+*.settings.ini
+# Exported traceroute results and reports (may contain internal IP addresses)
+traceroute_*.csv
+traceroute_*.txt
+
+# agent worktrees
+.claude/worktrees/
