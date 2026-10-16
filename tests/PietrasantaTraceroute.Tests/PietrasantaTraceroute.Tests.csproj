@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\PietrasantaTraceroute.Gui\TracerouteParser.cs" Link="Gui\TracerouteParser.cs" />
     <Compile Include="..\..\src\PietrasantaTraceroute.Gui\Wsl.cs" Link="Gui\Wsl.cs" />
+    <Compile Include="..\..\src\PietrasantaTraceroute.Gui\L.cs" Link="Gui\L.cs" />
     <None Include="samples\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

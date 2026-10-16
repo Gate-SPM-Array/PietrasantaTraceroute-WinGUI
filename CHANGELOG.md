@@ -2,6 +2,21 @@
 
 Regola: ogni versione consegnata ha un numero diverso; anche una modifica minima del codice produce una nuova versione con la sua voce qui sotto.
 
+## v1.2.1 — 2026-10-16
+
+Solo interfaccia: nessuna modifica al funzionamento del traceroute.
+
+### Novità
+- **Interfaccia in italiano e inglese.** Menu **🌐 Lingua / Language**; la scelta viene salvata nelle preferenze (`Language=` in `PietrasantaTracerouteGUI.settings.ini`) e si applica al riavvio, che il programma propone subito.
+  - Al primo avvio la lingua segue quella di Windows: italiano se Windows è in italiano, altrimenti inglese.
+  - Stesso schema di AdbSync: il testo italiano nel codice è la chiave, l'inglese è in `lang\en.json`. Chiunque può correggere una traduzione o aggiungere una lingua con un file `lang\<codice>.json`; ciò che manca resta in italiano e una traduzione che altera i segnaposto `{0}` viene ignorata.
+  - `en.json` è anche incorporato nell'eseguibile, che da solo resta autosufficiente; il file in `lang\` accanto all'exe, se presente, ha la precedenza. *🌐 Lingua → Apri la cartella delle traduzioni*.
+  - Tradotti anche il report TXT, la diagnostica WSL e i messaggi di installazione. Le intestazioni del CSV restano invariate, per non rompere chi lo elabora.
+- *? › Informazioni* mostra la lingua in uso e l'indirizzo del progetto su GitHub.
+
+### Altro
+- Test: 37, di cui 11 nuovi sulla localizzazione (ogni testo tradotto ha la sua voce in `en.json`, nessuna voce orfana, segnaposto identici, nessun testo a video senza `L.T`, lingua automatica, ritorno all'italiano se il file manca o non è valido).
+
 ## v1.2 — 2026-10-14
 
 ### Novità

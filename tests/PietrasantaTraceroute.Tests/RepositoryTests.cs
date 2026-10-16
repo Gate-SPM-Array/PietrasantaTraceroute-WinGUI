@@ -25,16 +25,19 @@ namespace PietrasantaTraceroute.Tests
         public void VersionNumber_IsTheSameEverywhere()
         {
             var csproj = Read("src", "PietrasantaTraceroute.Gui", "PietrasantaTraceroute.Gui.csproj");
-            var version = Regex.Match(csproj, @"<Version>(\d+)\.(\d+)\.0</Version>");
+            var version = Regex.Match(csproj, @"<Version>(\d+)\.(\d+)\.(\d+)</Version>");
             Assert.True(version.Success, "Version non trovata nel csproj");
-            var v = version.Groups[1].Value + "." + version.Groups[2].Value;   // es. 1.2
+            var full = version.Groups[1].Value + "." + version.Groups[2].Value + "." + version.Groups[3].Value;
+            // Nome visibile: "1.2" per le versioni x.y.0, "1.2.1" altrimenti (regola del maintainer: ogni consegna ha un numero nuovo)
+            var v = version.Groups[3].Value == "0" ? version.Groups[1].Value + "." + version.Groups[2].Value : full;
 
             Assert.Contains("<AssemblyName>PietrasantaTracerouteGUI_v" + v + "</AssemblyName>", csproj);
-            Assert.Contains("<FileVersion>" + v + ".0.0</FileVersion>", csproj);
+            Assert.Contains("<FileVersion>" + full + ".0</FileVersion>", csproj);
             Assert.Contains("AppVersion = \"" + v + "\"", Read("src", "PietrasantaTraceroute.Gui", "MainForm.cs"));
             Assert.Matches(new Regex(@"^## v" + Regex.Escape(v) + @" ", RegexOptions.Multiline), Read("CHANGELOG.md"));
             Assert.Contains("v" + v, Read("README.md").Split('\n')[0]);
             Assert.Contains("v" + v, Read("README.it.md").Split('\n')[0]);
+            Assert.Contains("\"app_version\": \"" + v + "\"", Read("lang", "en.json"));
         }
 
         [Fact]

@@ -22,10 +22,11 @@ A Windows GUI (WinForms, .NET Framework 4.8) that runs the official, unmodified 
 dotnet build -c Release     # on Linux: Microsoft's official .NET 8 SDK (dotnet-install.sh), not the distro build
 dotnet test -c Release
 ```
-Release packages are named with the version: `PietrasantaTracerouteGUI_vX.Y.zip` (exe, `.exe.config`, `LEGGIMI_vX.Y.txt`, `COPYING-traceroute.txt`, sources).
+Release packages are named with the version: `PietrasantaTracerouteGUI_vX.Y[.Z].zip` (exe, `.exe.config`, `lang\en.json`, `LEGGIMI_vX.Y[.Z].txt`, `COPYING-traceroute.txt`, sources).
 
 ## Conventions
 - **Versioning (maintainer's rule): every code change that is delivered — a zip, or a commit that changes code in a PR — gets a NEW version number and its own `CHANGELOG.md` entry. Never deliver two different builds with the same number.** File names always carry the version (`_vX.Y`).
-- Bump together: `<Version>`, `<FileVersion>` and `<AssemblyName>` in the csproj, `AppVersion` in `MainForm.cs`, the first line of both READMEs, `CHANGELOG.md`. `RepositoryTests.VersionNumber_IsTheSameEverywhere` checks this.
-- UI language: Italian. `README.md` (English, default on GitHub) and `README.it.md` (Italian) are kept in sync.
+- Bump together: `<Version>`, `<FileVersion>` and `<AssemblyName>` in the csproj, `AppVersion` in `MainForm.cs`, the first line of both READMEs, `CHANGELOG.md`, `app_version` in `lang/en.json`. `RepositoryTests.VersionNumber_IsTheSameEverywhere` checks this. Displayed version: `X.Y` when PATCH is 0, `X.Y.Z` otherwise (e.g. 1.2.1 for an interface-only change).
+- **Localization (same scheme as AdbSync):** every user-facing text (GUI, status bar, message boxes, TXT report, WSL diagnostics and install log) goes through `L.T("testo italiano")` or `L.F("testo {0}", x)` with a single string literal (no `$"..."`, no variables, no `+` inside the call). It gets its English translation in `lang/en.json` with identical placeholders. `LocalizationTests` enforces this. Keep the Italian text unchanged when refactoring (it is the key). Do not translate shell commands, markers (`PSTR_PID:`), tool output, file names or CSV headers. `lang/en.json` is embedded in the exe (`lang.en.json`) and copied to `lang\` next to it; the external file wins.
+- `README.md` (English, default on GitHub) and `README.it.md` (Italian) are kept in sync.
 - The program must stay **portable**: nothing written outside its folder except the WSL distribution and, on explicit request, `%USERPROFILE%\.wslconfig`.

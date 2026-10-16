@@ -1,6 +1,8 @@
-# Pietrasanta Traceroute GUI per Windows v1.2
+# Pietrasanta Traceroute GUI per Windows v1.2.1
 
 [English](README.md) · **Italiano**
+
+> **Lingua:** il programma parla **italiano** e **inglese**. Si sceglie dal menu **🌐 Lingua** e si applica al riavvio, che il programma propone subito. Al primo avvio segue la lingua di Windows. Chiunque può correggere una traduzione o aggiungere una lingua con un file JSON: vedi [Traduzioni](#7-traduzioni).
 
 Interfaccia grafica Windows per **[Pietrasanta traceroute](https://github.com/catchpoint/Networking.traceroute)** (Catchpoint), il traceroute Linux evoluto con **TCP InSession**, UDP InSession, QUIC e lettura di DSCP/ECN.
 
@@ -23,7 +25,7 @@ Pietrasanta traceroute esiste solo per Linux: usa funzioni del kernel Linux, com
    ```
    In alternativa usa il menu *Strumenti › Installa Ubuntu 24.04 in WSL*. Quando Ubuntu lo chiede, crea l'utente Linux.
    Le distribuzioni WSL sono registrate **per utente Windows**: se Ubuntu viene installato con un altro account (per esempio un account amministrativo separato), il tuo utente non lo vede.
-2. Estrai lo zip in una cartella a tua scelta e avvia `PietrasantaTracerouteGUI_v1.2.exe`. Scegli la distribuzione e premi **Installa / aggiorna tool in WSL** (pochi secondi). Lo stato diventa *Pronto – versione 0.1.36*.
+2. Estrai lo zip in una cartella a tua scelta e avvia `PietrasantaTracerouteGUI_v1.2.1.exe`. Scegli la distribuzione e premi **Installa / aggiorna tool in WSL** (pochi secondi). Lo stato diventa *Pronto – versione 0.1.36*.
 3. Consigliato: *Strumenti › Rete WSL in modalità "mirrored"*. Con la rete NAT predefinita di WSL compare un hop in più, il NAT interno di WSL (di solito 172.x.x.1). In modalità mirrored WSL usa direttamente le schede di rete del PC. Viene modificato `%USERPROFILE%\.wslconfig`, con copia di backup.
 
 L'eseguibile non è firmato digitalmente: Windows SmartScreen può mostrare "Windows ha protetto il PC". Scegli *Ulteriori informazioni › Esegui comunque*, oppure tasto destro sul file › Proprietà › *Annulla blocco*.
@@ -46,9 +48,10 @@ L'eseguibile non è firmato digitalmente: Windows SmartScreen può mostrare "Win
 Tutto ciò che il programma scrive resta nella sua cartella:
 
 ```
-PietrasantaTracerouteGUI_v1.2\
-  PietrasantaTracerouteGUI_v1.2.exe
-  PietrasantaTracerouteGUI.settings.ini   ultima distribuzione, metodo, storico delle destinazioni
+PietrasantaTracerouteGUI_v1.2.1\
+  PietrasantaTracerouteGUI_v1.2.1.exe
+  PietrasantaTracerouteGUI.settings.ini   ultima distribuzione, metodo, storico delle destinazioni, lingua
+  lang\en.json                            traduzione inglese (qui si aggiungono altre lingue)
 ```
 
 - **Ordine di lettura:** prima la cartella dell'eseguibile, poi `%APPDATA%\PietrasantaTracerouteGUI\settings.ini`. Al primo salvataggio le preferenze trovate lì vengono copiate accanto all'eseguibile.
@@ -79,7 +82,7 @@ dotnet build -c Release
 dotnet test -c Release
 ```
 
-L'eseguibile viene prodotto in `src/PietrasantaTraceroute.Gui/bin/Release/net48/`. I pacchetti di rilascio hanno la versione nel nome, per esempio `PietrasantaTracerouteGUI_v1.2.zip`.
+L'eseguibile viene prodotto in `src/PietrasantaTraceroute.Gui/bin/Release/net48/`. I pacchetti di rilascio hanno la versione nel nome, per esempio `PietrasantaTracerouteGUI_v1.2.1.zip`.
 
 ```
 src/PietrasantaTraceroute.Gui/     GUI WinForms (net48)
@@ -87,12 +90,28 @@ src/PietrasantaTraceroute.Gui/     GUI WinForms (net48)
   Wsl.cs                           chiamate a wsl.exe, installazione del tool, .wslconfig
   TracerouteParser.cs              interpretazione dell'output di traceroute
   Settings.cs                      preferenze portable
+  L.cs                             traduzioni (il testo italiano è la chiave)
+lang/en.json                       traduzione inglese (incorporata nell'exe e copiata accanto)
   res/pietrasanta-traceroute       binario Linux incorporato (GPL, senza modifiche)
 tests/PietrasantaTraceroute.Tests/ test xunit (net8.0, girano anche su Linux)
 third_party/pietrasanta-traceroute-0.1.36/   sorgente upstream corrispondente (GPL)
 ```
 
-## 7. Licenza
+## 7. Traduzioni
+
+Stesso schema di AdbSync. Il testo italiano nel codice è la chiave: `L.T("Avvia")`. Un file di lingua associa a ogni testo italiano la sua traduzione; ciò che manca resta in italiano.
+
+```json
+{ "code": "en", "language": "English", "translators": "...", "app_version": "1.2.1",
+  "strings": { "Avvia": "Start", "hop: {0}": "hops: {0}" } }
+```
+
+- Per correggere una traduzione, modifica `lang\en.json` accanto all'eseguibile. Ha la precedenza sulla copia incorporata nell'exe.
+- Per aggiungere una lingua, copia `en.json` in `lang\<codice>.json` (per esempio `de.json`), cambia `code` e `language` e traduci i valori. La lingua compare nel menu **🌐 Lingua** al riavvio successivo.
+- I segnaposto `{0}`, `{1}` devono restare gli stessi. Una traduzione che li altera viene ignorata e al suo posto compare il testo italiano.
+- Le intestazioni delle colonne del CSV non vengono tradotte, così gli script che leggono il CSV continuano a funzionare.
+
+## 8. Licenza
 
 - La GUI (`src/`, `tests/`, documentazione) è distribuita con licenza **MIT** (vedi [LICENSE](LICENSE)). La licenza MIT non copre il binario di Pietrasanta traceroute né `third_party/`.
 - Pietrasanta traceroute è © Catchpoint Systems, Inc. e Dmitry Butskoy, con licenza **GNU GPL v2 o successiva**. Il suo binario è incluso senza modifiche come programma separato; il sorgente corrispondente è in [`third_party/`](third_party/pietrasanta-traceroute-0.1.36).
